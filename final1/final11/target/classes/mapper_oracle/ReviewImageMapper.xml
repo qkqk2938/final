@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.ReviewImageMapper">
+
+	<select id="list" resultType="com.example.domain.ReviewImageVO">	
+		select * from
+		(select rownum rn, tbl.* from
+		(select * from ReviewImage) tbl)
+		where rn between (#{pageStart}+1) and
+		(#{pageStart}+#{perPageNum})
+	</select>
+	<select id="list1" resultType="com.example.domain.ReviewImageVO">	
+		select * from
+		(select rownum rn, tbl.* from
+		(select * from ReviewImage) tbl)
+		where rcode=#{rcode} and rn between (#{pageStart}+1) and
+		(#{pageStart}+#{perPageNum})
+	</select>
+	<insert id="insert">
+		insert into ReviewImage(rcode, image)
+		values((select max(rcode) from review), #{image})
+	</insert>
+
+	<select id="read" resultType="com.example.domain.ReviewImageVO">
+		select * from ReviewImage
+		where image=#{image}
+	</select>
+	
+	<update id="updateImage">
+		insert into ReviewImage(rcode, image)
+		values(#{rcode}, #{image})
+	</update>
+
+	<delete id="deleteImage">
+		delete from ReviewImage where rcode=#{rcode}
+	</delete>
+	<select id="getImage" resultType="String">
+		select image from reviewimage where rcode=#{rcode}
+	</select>
+</mapper>

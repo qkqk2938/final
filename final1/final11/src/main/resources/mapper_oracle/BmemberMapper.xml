@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.BmemberMapper">
+ <select id="list" resultType="com.example.domain.BmemberVO">
+ 	select * from
+		(select rownum rn, tbl.* from
+		(select * from bmember
+		order by bcode desc) tbl)
+		where rn between #{pageStart}+1 and
+		#{pageStart}+#{perPageNum}
+ </select>
+ <select id="read" resultType="com.example.domain.BmemberVO">
+ 	select * from Bmember where bcode = #{bcode}
+ </select>
+ <insert id="insert">
+ 	insert into Bmember(bcode,bname,bpass,btel,bemail,bbirth,bgender) values(#{bcode},#{bname},#{bpass},#{btel},#{bemail},#{bbirth},#{bgender})
+ </insert>
+ <update id="update">
+ 	update Bmember set bname =#{bname} , bpass=#{bpass} , btel =#{btel} , bemail =#{bemail} , bbirth =#{bbirth} , bgender =#{bgender} where bcode =#{bcode}
+ </update>
+ <delete id="delete">
+ 	delete from Bmember where bcode = #{bcode}
+ </delete>
+ <select id="totalCount" resultType="int">
+ 	select count(*) from bmember
+ </select>
+</mapper>
