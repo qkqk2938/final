@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.GoodMapper">
+ <select id="list" resultType="com.example.domain.GoodVO">
+ 	select*from good 
+ </select>
+ <select id="read" resultType="com.example.domain.GoodVO">
+ 	select*from good 
+ 	where gid=#{gid} and rcode=#{rcode}
+ </select>
+ <insert id="insert">
+ 	insert into good(gid,rcode) 
+ 	values(#{gid},#{rcode})
+ </insert>
+ <delete id="delete">
+ 	delete from good 
+ 	where gid=#{gid} and rcode=#{rcode}
+ </delete>
+ <select id="totalCount" resultType="int">
+ 	select count(*) from good
+ </select>
+ <delete id="userDelete">delete from good where gid = #{gid} </delete>
+ <select resultType="int" id="goodCount">select count(*) from good where rcode=#{rcode} </select>
+
+<delete id="reviewDelete">delete from good where rcode=#{rcode} </delete>
+</mapper>

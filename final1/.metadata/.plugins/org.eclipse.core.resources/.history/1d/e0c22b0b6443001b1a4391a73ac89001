@@ -1,0 +1,74 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+ <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+   <script>
+      Kakao.init('371a6350e4ece61cd145ad92b9a39d6e');
+       console.log(Kakao.isInitialized());
+   </script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>카카오 로그인 중</h1> 
+
+<form action = "insert" method="post" name = "frm" enctype="multipart/form-data">
+<input type = "" name = "gid" id = "gid">
+<input type = "" name = "gname" id = "gname">
+<input type = "" name = "gimage" id = "gimage">
+<input type = "" name = "gbirth" id = "gbirth">
+<input type = "" name = "gnickname" id = "gnickname">
+<input type = "" name = "gemail" id = "gemail">
+<input type = "" name = "ggender" id = "ggender">
+<input type = "" name = "gpass" id = "gpass">
+<input type = "" name = "gtel" id = "gtel">
+<input type = "" name = "gaddr" id = "gaddr">
+<input type="file" name="file">
+</form>
+
+
+</body>
+<script type="text/javascript">
+loginWithKakao();
+function loginWithKakao() {
+    Kakao.Auth.login({
+         success: function(authObj) {
+            
+            var token = authObj.access_token;
+
+            Kakao.API.request({
+                url: '/v2/user/me',
+                success: function(response) {
+                   
+                   
+                   var id = response.id;
+                   var name = response.properties.nickname;
+                   var email = response.properties.profile.email;
+                   var gender = response.properties.profile.gender;
+                 alert(id);
+                 alert(name);
+                 alert(email);
+                 alert(gender);
+                   
+                  
+                   
+                },
+                fail: function(error) {
+                    console.log(error);
+                }
+            });
+            
+            
+         },
+         fail : function(err) {
+          alert(JSON.stringify(err))
+       },
+      });
+       
+    }
+    </script>
+
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.CafeImageMapper">
+	 <select id="list" resultType="com.example.domain.CafeImageVO">
+		select * from cafeimage
+		where ccode=#{ccode}
+		order by image desc
+		
+	 </select>
+	  <select id="read" resultType="com.example.domain.CafeImageVO">
+	 	select * from CafeImage where image=#{image}
+	 </select>
+	 <insert id="insert">
+	 	insert into CafeImage(image, ccode) values(#{image}, #{ccode})
+	 </insert>
+	 <delete id="delete">
+	 	delete from CafeImage where image=#{image}
+	 </delete>
+	 <select id="totalCount" resultType="int">
+	 	select count(*) from cafeimage where ccode=#{ccode}
+	 </select>
+	 <select id="cafeImage" resultType="String">
+	 	select image from cafeimage where ccode=#{ccode}
+	 </select>
+	 <delete id="deleteImage">
+	 	delete from cafeimage where ccode=#{ccode}
+	 </delete>
+</mapper>

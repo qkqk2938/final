@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.CafeMapper">
+<select resultType="hashmap" id="list1">select * from cafe c inner join operator o on c.ccode=o.ccodeinner join bmember b on o.bcode=b.bcode inner join review r on c.ccode=r.ccode where o.bcode=#{bcode} </select>
+ <select id="list" resultType="com.example.domain.CafeVO">
+	select * from
+	(select rownum rn, tbl.* from
+		<if test="searchType==null||searchType==''">
+			(select * from cafe 
+			order by ccode desc) tbl)
+		</if>
+		<if test="searchType=='teama'">
+			(select c.*,tag from cafe c inner join hashtag h on c.ccode=h.ccode
+			where tag like '%' || #{keyword} || '%'
+			order by c.ccode desc) tbl)
+		</if>
+		<if test="searchType=='total'">
+			(select * from cafe
+			where cname like '%' || #{keyword} || '%' or caddr like '%' || #{keyword} || '%'
+			order by ccode desc) tbl)
+		</if> 
+		<if test="searchType=='local'">
+			<if test="mcode==null">
+				(Select c.* from cafe c inner join mcategory m on c.mcode=m.mcode
+				where lcode=#{lcode} and cname like '%' || #{keyword} || '%'
+				order by c.ccode desc) tbl)
+			</if>
+			<if test="mcode!=null">
+				(Select c.* from cafe c inner join mcategory m on c.mcode=m.mcode
+				where c.mcode=#{mcode} and cname like '%' || #{keyword} || '%'
+				order by c.ccode desc) tbl)
+			</if>
+		</if>
+	where rn between #{pageStart}+1 and
+	#{pageStart}+#{perPageNum}
+ </select>
+
+ <select id="read" resultType="com.example.domain.CafeVO">
+ 	select*from cafe where ccode=#{ccode}
+ </select>
+ <insert id="insert">insert into cafe(cname,caddr,ctel,cimage,mcode,cmenu,ccode,x,y,ccontent) values(#{cname},#{caddr},#{ctel},#{cimage},#{mcode},#{cmenu},seq_cafe.nextval,#{x},#{y},#{ccontent}) </insert>
+ <update id="update">
+ 	update cafe set cname =#{cname} , caddr=#{caddr} , ctel =#{ctel} , cimage =#{cimage} , mcode =#{mcode} , cmenu =#{cmenu} , x=#{x} , y=#{y},ccontent=#{ccontent} where ccode =#{ccode}
+ </update>
+ <delete id="delete">
+ 	delete from cafe where ccode = #{ccode}
+ </delete>
+ <select id="totalCount" resultType="int">
+ 	select count(*) from cafe 
+ 	<if test="searchType=='cname'">
+			where cname like '%' || #{keyword} || '%'
+	</if>
+	<if test="searchType=='mcode'">
+		where mcode = #{keyword}
+	</if>
+ </select>
+ <update id="updateView">
+ 	update cafe set viewcnt=viewcnt+1 where ccode=#{ccode}
+ </update>
+ <select resultType="int" id="getLastCcode">select max(ccode) from cafe </select>
+ <select id="nearList" resultType="com.example.domain.CafeVO">
+ 	select * from
+	(select rownum rn, tbl.* from
+    (SELECT ccode, cname, caddr,cimage, x, y,(1609.34*(ACOS(SIN(#{y}*3.14159265359/180)*SIN(y*3.14159265359/180) 
+    +COS(#{y}*3.14159265359/180)*COS(y*3.14159265359/180) 
+    *COS((#{x}-x)*3.14159265359/180))*180/3.14159265359)*60*1.1515) AS distance
+    from cafe order by distance asc) tbl
+	<![CDATA[where distance>1 and distance<500]]>) 
+	where rn between 1 and 4
+ </select>
+</mapper>

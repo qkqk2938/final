@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.ReviewCommentMapper">
+<select resultType="hashmap" id="list">select * from reviewcomment r inner join reviewimage ri on r.rcode=ri.rcode where gid=#{gid} </select>
+	
+	<select id="list1" resultType="com.example.domain.ReviewCommentVO">
+		select * from
+		(select rownum rn, tbl.* from
+		(select * from ReviewComment 
+		order by rccode desc) tbl)
+		where rcode=#{rcode} and rn between (#{pageStart}+1) and
+		(#{pageStart}+#{perPageNum})
+	</select>
+	
+	<insert id="insert">
+		insert into ReviewComment(rccode, rcode, gid, rccontent)
+		values(seq_rc.nextval, #{rcode}, #{gid},#{rccontent})
+	</insert>
+
+	<select id="read" resultType="com.example.domain.ReviewCommentVO">
+		select * from ReviewComment
+		where rcode=#{rcode}
+	</select>
+	<update id="update">
+		update ReviewComment set rccontent=#{rccontent} 
+		where rccode=#{rccode}
+	</update>
+
+	<delete id="delete">
+		delete from ReviewComment where rccode=#{rccode}
+	</delete>
+	<select id="totalCount" resultType="int">
+		select count(*) from reviewcomment where rcode=#{rcode}
+	</select>
+	<delete id="userDelete">delete from reviewcomment where gid = #{gid} </delete>
+</mapper>

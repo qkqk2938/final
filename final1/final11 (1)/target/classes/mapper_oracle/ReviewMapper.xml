@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper_oracle.ReviewMapper">
+
+
+<select id="list" resultType="com.example.domain.ReviewVO">
+ 	select * from
+(select rownum rn, tbl.* from 
+(select r.gid,gnickname,gimage,r.rcode,rcontent,rdate,rscope,rimage,count(g.rcode) count from 
+gmember gm,review r,good g where gm.gid=r.gid and r.rcode=g.rcode and ccode=#{ccode}
+group by r.gid,gnickname,gimage,r.rcode,rcontent,rdate,rscope,rimage order by count desc) tbl) 
+where rn between 1 and 12
+ </select>
+
+<select resultType="com.example.domain.ReviewVO" id="read">select * from review where rcode = #{rcode} </select>
+
+<insert id="insert">insert into review(rcode,gid,ccode,rcontent,rscope) values(seq_review.nextval,#{gid},#{ccode},#{rcontent},#{rscope}) </insert>
+
+<update id="update">update review set rcontent=#{rcontent} , rscope=#{rscope} where rcode =#{rcode} </update>
+
+<delete id="delete">delete from review where rcode = #{rcode} </delete>
+
+<select resultType="int" id="totalCount">select count(*) from review where ccode=#{ccode} </select>
+
+<select resultType="String" id="avgScope">select avg(rscope) from review where ccode=#{ccode} </select>
+
+<select resultType="com.example.domain.ReviewVO" id="bestReview">select * from (select rownum rn, tbl.* from (select r.gid,r.ccode,gnickname,gimage,r.rcode,rcontent,rdate,rscope,rimage,count(g.rcode) count from gmember gm,review r,good g where gm.gid=r.gid and r.rcode=g.rcode and ccode=#{ccode} group by r.gid,gnickname,gimage,r.rcode,rcontent,rdate,rscope,rimage,r.ccode order by count desc) tbl) where rn between 1 and 3 </select>
+<select resultType="hashmap" id="list1">select * from(select rownum rn, tbl.* from(select * from review r inner join cafe c on r.ccode=c.ccode inner join reviewimage ri on r.rcode=ri.rcode where r.gid=#{gid}) tbl) </select>
+<delete id="userDelete">delete from review where gid=#{gid} </delete>
+
+</mapper>
